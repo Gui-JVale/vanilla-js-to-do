@@ -1,0 +1,19 @@
+html {
+  height: 100vh;
+  background: linear-gradient(to right bottom, #2c3e50, #34495e);
+  color: #ecf0f1;
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 6rem;
+  // text-transform: uppercase;
+  line-height: 1.6;
+  letter-spacing: 0.2rem;
+}
+
+#view {
+  position: absolute;
+  width: 90%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
