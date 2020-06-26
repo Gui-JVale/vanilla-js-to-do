@@ -1,5 +1,6 @@
-import view from './views/view';
+import ListView from './views/list.view';
 
 import './main.scss';
 
-view.init();
+const list = new ListView();
+list.init();

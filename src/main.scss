@@ -1,19 +1,41 @@
 html {
+  font-size: 62.5%;
+}
+
+body {
   height: 100vh;
   background: linear-gradient(to right bottom, #2c3e50, #34495e);
   color: #ecf0f1;
   font-family: sans-serif;
   text-align: center;
-  font-size: 6rem;
-  // text-transform: uppercase;
+  font-size: 2rem;
   line-height: 1.6;
   letter-spacing: 0.2rem;
 }
 
-#view {
+#app {
   position: absolute;
-  width: 90%;
-  top: 50%;
+  width: 40%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 2rem;
+  background-color: red;
+}
+
+#list-view {
+  list-style: none;
+
+  li {
+    display: block;
+    padding: 1rem;
+    background-color: yellow;
+    color: black;
+  }
+}
+
+#clear-list {
+  display: inline-block;
+  padding: 1rem 3rem;
+  background-color: orange;
 }

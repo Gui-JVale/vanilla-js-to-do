@@ -3,11 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JS App</title>
+    <title>To-do App</title>
   </head>
   <body>
     <div id="app">
-      <div id="view"></div>
+      <form action="" id="list-form">
+        <label for="task">Add to-do:</label>
+        <input type="text" name="task" id="task" placeholder="Read book" />
+        <button type="submit" id="submit-form">Add</button>
+      </form>
+      <ul id="list-view"></ul>
+      <div id="clear-list">clear</div>
     </div>
   </body>
 </html>

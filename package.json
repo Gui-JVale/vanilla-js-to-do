@@ -1,11 +1,11 @@
 {
-  "name": "minimal-setup",
+  "name": "to-do-app",
   "version": "1.0.0",
-  "description": "personalized minimal setup for developing without a framework",
+  "description": "To-do list app",
   "main": "app.js",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js --open",
-    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --config ./config/webpack.dev.js --open",
+    "build": "webpack --config ./config/webpack.prod.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
