@@ -4,8 +4,19 @@ html {
 
 body {
   height: 100vh;
-  background: linear-gradient(to right bottom, #2c3e50, #34495e);
-  color: #ecf0f1;
+  background: #eb3349; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to left,
+    #f45c43,
+    #eb3349
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to left,
+    #f45c43,
+    #eb3349
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  color: #34495e;
   font-family: sans-serif;
   text-align: center;
   font-size: 2rem;
@@ -19,23 +30,103 @@ body {
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 2rem;
-  background-color: red;
+  background-color: #ecf0f1;
+  border-radius: 10px;
 }
 
-#list-view {
-  list-style: none;
+.form {
+  width: 100%;
+  display: flex;
 
-  li {
-    display: block;
+  &__label {
+    display: none;
+  }
+
+  &__input {
+    flex: 1;
+    border-top-left-radius: 10px;
+    background: inherit;
+    border: none;
     padding: 1rem;
-    background-color: yellow;
+    padding-left: 3rem;
+    font-size: 2rem;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__submit {
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-top-right-radius: 10px;
+    background-color: #e67e22;
+    padding: 0.5rem 2rem;
+    font-size: 2rem;
+    color: #fff;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #e2e8ea;
+
+  &__item {
+    display: flex;
+    margin-left: 0;
+    padding: 1rem;
+    background-color: inherit;
     color: black;
+    align-items: center;
+  }
+
+  &__drag-icon {
+    opacity: 0.4;
+  }
+
+  &__task {
+    flex: 1;
+  }
+
+  &__label {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #34495e;
+    border-radius: 2px;
+    margin-right: 1rem;
+  }
+
+  &__checkbox:checked ~ &__label {
+    background-color: #34495e;
+  }
+
+  &__checkbox:checked ~ &__task {
+    text-decoration: line-through;
+  }
+
+  &__delete-icon {
+    display: none;
   }
 }
 
 #clear-list {
-  display: inline-block;
-  padding: 1rem 3rem;
-  background-color: orange;
+  display: block;
+  cursor: pointer;
+  padding: 0.2rem 4rem;
+  background-color: #34495e;
+  color: #fff;
+  font-size: 2rem;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+  &:focus {
+    outline: none;
+  }
 }

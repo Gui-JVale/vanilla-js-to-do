@@ -44,12 +44,22 @@ class Controller {
     return model;
   }
 
+  static getTask(i) {
+    return model[i];
+  }
+
   static add(task) {
     return model.push(task);
   }
 
   static remove(arg) {
     return model.splice(typeof arg === 'string' ? model.indexOf(arg) : arg);
+  }
+
+  static toggleComplete(index) {
+    const task = Controller.getTask(index);
+    if (task) task.completed = !task.completed;
+    return this;
   }
 
   static empty() {
@@ -99,6 +109,15 @@ class Controller {
       } else if (action === 'remove' && typeof arg !== 'number') {
         throw Error(
           'If action is to delete, second parameter must be an index'
+        );
+      }
+
+      if (action === 'toggleComplete' && typeof arg === 'number') {
+        Controller.autoSaveAndPublish(
+          Controller.toggleComplete,
+          arg,
+          model,
+          'modelUpdate'
         );
       }
 
