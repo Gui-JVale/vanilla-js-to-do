@@ -1,5 +1,7 @@
 {
   "parser": "babel-eslint",
+  "extends": ["airbnb-base", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": ["error"],
     "no-unused-vars": "warn",
@@ -7,8 +9,6 @@
     "func-names": "off",
     "import/no-named-default": 0
   },
-  "extends": ["airbnb-base", "prettier"],
-  "plugins": ["prettier"],
   "env": {
     "browser": true
   }

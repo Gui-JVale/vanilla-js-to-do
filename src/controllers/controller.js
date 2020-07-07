@@ -41,7 +41,7 @@ class Controller {
   }
 
   static getList() {
-    return model;
+    return model.filter((m) => m);
   }
 
   static getTask(i) {
@@ -49,11 +49,20 @@ class Controller {
   }
 
   static add(task) {
-    return model.push(task);
+    if (task) {
+      return model.push(task);
+    }
+    return false;
   }
 
   static remove(arg) {
     return model.splice(typeof arg === 'string' ? model.indexOf(arg) : arg);
+  }
+
+  static swap([index1, index2]) {
+    const temp = model[index1];
+    model[index1] = model[index2];
+    model[index2] = temp;
   }
 
   static toggleComplete(index) {
@@ -67,7 +76,10 @@ class Controller {
   }
 
   static save() {
-    return localStorage.setItem('model', JSON.stringify(model));
+    return localStorage.setItem(
+      'model',
+      JSON.stringify(model.filter((m) => m))
+    );
   }
 
   static autoSave(fn, arg) {
@@ -81,41 +93,50 @@ class Controller {
   }
 
   static interface = {
-    updateList(action, arg) {
+    updateList(action, ...args) {
       if (typeof action !== 'string') {
         throw Error(
           'First parameter must be a string defining the type of action'
         );
       }
 
-      if (action === 'add' && typeof arg === 'object') {
+      if (action === 'add' && typeof args[0] === 'object') {
         Controller.autoSaveAndPublish(
           Controller.add,
-          arg,
+          args[0],
           model,
           'modelUpdate'
         );
-      } else if (action === 'add' && typeof arg !== 'object') {
+      } else if (action === 'add' && typeof args[0] !== 'object') {
         throw Error('If action is to add, second parameter must an object');
       }
 
-      if (action === 'remove' && typeof arg === 'number') {
+      if (action === 'remove' && typeof args[0] === 'number') {
         Controller.autoSaveAndPublish(
           Controller.remove,
-          arg,
+          args[0],
           model,
           'modelUpdate'
         );
-      } else if (action === 'remove' && typeof arg !== 'number') {
+      } else if (action === 'remove' && typeof args[0] !== 'number') {
         throw Error(
           'If action is to delete, second parameter must be an index'
         );
       }
 
-      if (action === 'toggleComplete' && typeof arg === 'number') {
+      if (action === 'toggleComplete' && typeof args[0] === 'number') {
         Controller.autoSaveAndPublish(
           Controller.toggleComplete,
-          arg,
+          args[0],
+          model,
+          'modelUpdate'
+        );
+      }
+
+      if (action === 'swap' && args.length === 2) {
+        Controller.autoSaveAndPublish(
+          Controller.swap,
+          args,
           model,
           'modelUpdate'
         );
