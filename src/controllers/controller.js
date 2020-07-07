@@ -100,56 +100,62 @@ class Controller {
         );
       }
 
-      if (action === 'add' && typeof args[0] === 'object') {
-        Controller.autoSaveAndPublish(
-          Controller.add,
-          args[0],
-          model,
-          'modelUpdate'
-        );
-      } else if (action === 'add' && typeof args[0] !== 'object') {
-        throw Error('If action is to add, second parameter must an object');
+      switch (action) {
+        case 'add':
+          if (typeof args[0] !== 'object') {
+            throw Error('If action is to add, second parameter must an object');
+          }
+          return Controller.autoSaveAndPublish(
+            Controller.add,
+            args[0],
+            model,
+            'modelUpdate'
+          );
+        case 'remove':
+          if (typeof args[0] !== 'number') {
+            throw Error(
+              'If action is to delete, second parameter must be an index'
+            );
+          }
+          return Controller.autoSaveAndPublish(
+            Controller.remove,
+            args[0],
+            model,
+            'modelUpdate'
+          );
+        case 'toggleComplete':
+          if (typeof args[0] !== 'number') {
+            throw Error(
+              'If action is to toggleComplete, second parameter must be an index'
+            );
+          }
+          return Controller.autoSaveAndPublish(
+            Controller.toggleComplete,
+            args[0],
+            model,
+            'modelUpdate'
+          );
+        case 'swap':
+          if (args.length !== 2) {
+            throw Error('swap must be called with 2 arguments');
+          }
+          return Controller.autoSaveAndPublish(
+            Controller.swap,
+            args,
+            model,
+            'modelUpdate'
+          );
+        case 'empty':
+          return Controller.autoSaveAndPublish(
+            Controller.empty,
+            null,
+            model,
+            'modelUpdate'
+          );
+        default:
+          break;
       }
-
-      if (action === 'remove' && typeof args[0] === 'number') {
-        Controller.autoSaveAndPublish(
-          Controller.remove,
-          args[0],
-          model,
-          'modelUpdate'
-        );
-      } else if (action === 'remove' && typeof args[0] !== 'number') {
-        throw Error(
-          'If action is to delete, second parameter must be an index'
-        );
-      }
-
-      if (action === 'toggleComplete' && typeof args[0] === 'number') {
-        Controller.autoSaveAndPublish(
-          Controller.toggleComplete,
-          args[0],
-          model,
-          'modelUpdate'
-        );
-      }
-
-      if (action === 'swap' && args.length === 2) {
-        Controller.autoSaveAndPublish(
-          Controller.swap,
-          args,
-          model,
-          'modelUpdate'
-        );
-      }
-
-      if (action === 'empty') {
-        Controller.autoSaveAndPublish(
-          Controller.empty,
-          null,
-          model,
-          'modelUpdate'
-        );
-      }
+      return this;
     },
 
     subscribe: Controller.subscribe,

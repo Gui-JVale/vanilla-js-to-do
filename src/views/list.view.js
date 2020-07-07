@@ -49,6 +49,7 @@ class ListView extends View {
     let deleteIcon;
 
     this.listNode.innerHTML = '';
+    this.input.value = '';
 
     for (i; i >= 0; i -= 1) {
       item = model[i];
