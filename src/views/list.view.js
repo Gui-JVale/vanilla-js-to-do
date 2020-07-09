@@ -166,112 +166,100 @@ class ListView extends View {
    * The Drag n'Drop functionality consists of 3 events:
    * mousedown, mousemove and mouseup.
    *
-   * On MouseDown:
-   *  - Default drag listener is canceled
-   *  - The dragged element is set as this.dragging (to use later)
-   *  - A "Ghost Node" is created by cloning the dragging element
-   * (this is the element that is the one actually dragged around
-   * the screen, like a facade)
-   *  - The original dragged element is hidden
-   *  - The dropzone element is appended to the list -- for better UX
-   *  - Then the initial move occurs, based on where the user click
-   * happened on the screen
-   *  - After that, the event listeners of mousemove and mouseup
-   * are added to the ghostNode
+   * Mousemove and Mouseup ev listeners are added
+   * inside the Mousedown ev listener
    *
    */
   dragAndDrop(dragBtn) {
     dragBtn.addEventListener(
       'mousedown',
-      function (event) {
-        this.dragging = dragBtn.parentElement;
-        this.shiftX =
-          event.clientX - this.dragging.getBoundingClientRect().left;
-        this.shiftY = event.clientY - this.dragging.getBoundingClientRect().top;
-
-        // Setup
-        this.ghostNode = this.dragging.cloneNode(true);
-        this.ghostNode.classList.add('list__dragging');
-        this.ghostNode.addEventListener('dragstart', (e) => e.preventDefault());
-        dragBtn.addEventListener('dragstart', (e) => e.preventDefault());
-        this.listNode.insertBefore(this.dropzone, this.dragging);
-        this.dragging.style.display = 'none';
-        document.body.append(this.ghostNode);
-        ListView.moveAt(
-          this.ghostNode,
-          event.pageX - this.shiftX / 2,
-          event.pageY - this.shiftY / 2
-        ); // Initial Coordinates (based on initial press)
-
-        // On Mouse Move Event
-        this.ghostNode.addEventListener(
-          'mousemove',
-          this.draggingOnMouseMove.bind(this)
-        );
-
-        // On Mouse up Event
-        this.ghostNode.addEventListener(
-          'mouseup',
-          this.draggingOnMouseUp.bind(this)
-        );
+      function (e) {
+        this.draggingOnMouseDown(e, dragBtn);
       }.bind(this)
     );
   }
 
-  /*
-   *
-   * Drag n'Drop Algorithm:
-   *
-   * On MouseMove:
-   *  - We get the element below the dragged element
-   *  - We than move the ghost element based on where the
-   * mouse currently is (creating the drag functionality)
-   *  - If the element below the one dragged is an <li>,
-   * we then store it on this.draggedOver (to refer later)
-   *  - Then the dropzone is inserted before the element
-   * below the one being dragged
-   *
-   */
+  draggingOnMouseDown(event, dragBtn) {
+    this.dragging = dragBtn.parentElement; // reference for later use
+    this.shiftX = event.clientX - this.dragging.getBoundingClientRect().left;
+    this.shiftY = event.clientY - this.dragging.getBoundingClientRect().top;
+
+    // Setup Ghost Node, Dropzone, remove default ev. listeners, hide
+    // original Node
+    this.dragSetup(event, dragBtn);
+
+    // Attach Event listeners
+    this.ghostNode.addEventListener(
+      'mousemove',
+      this.draggingOnMouseMove.bind(this)
+    );
+
+    this.ghostNode.addEventListener(
+      'mouseup',
+      this.draggingOnMouseUp.bind(this)
+    );
+  }
+
+  dragSetup(event, dragBtn) {
+    // Cancel default drag event on btn
+    dragBtn.addEventListener('dragstart', (e) => e.preventDefault());
+    // Setup Ghost Node (dragging node):
+    // Instead of dragging the original Node, the user
+    // drags a clone of it, called Ghost Node.
+    this.ghostNode = this.dragging.cloneNode(true);
+    this.ghostNode.classList.add('list__dragging');
+    this.ghostNode.addEventListener('dragstart', (e) => e.preventDefault());
+    // Insert 'dropzone' in the place of the node being dragged (for better UX)
+    this.listNode.insertBefore(this.dropzone, this.dragging);
+    this.dragging.style.display = 'none'; // Hide Original Node
+    document.body.append(this.ghostNode); // Display Ghost Node
+    ListView.moveAt(
+      this.ghostNode,
+      event.pageX - this.shiftX / 2,
+      event.pageY - this.shiftY / 2
+    ); // Initial Coordinates (based on initial press)
+  }
+
   draggingOnMouseMove(e) {
+    // Get elem below dragged node
     const elemBelow = ListView.getElemBelow(this.ghostNode, e);
 
+    // Actual dragging functionality
     ListView.moveAt(
       this.ghostNode,
       e.pageX - this.shiftX / 2,
       e.pageY - this.shiftY / 2
     );
+
+    // Dropzone UI preview
     if (elemBelow && elemBelow.tagName === 'LI') {
+      // Create reference of draggedOver element for mouseup event
       this.draggedOver = elemBelow;
       elemBelow.parentElement.insertBefore(this.dropzone, this.draggedOver);
     }
   }
 
-  /*
-   *
-   * Drag n'Drop Algorithm:
-   *
-   * On MouseUp:
-   *  - Check if this.dragging and this.draggedOver are valid
-   *  - Now the actual insertion occurs. The original dragged
-   * element is inserted before the draggedOver(declared on
-   * the mouseup event)
-   * - The Ghost node and dropzone are removed
-   * - Event listeners are removed
-   * - All dragging props are reset to null
-   */
   draggingOnMouseUp() {
     if (this.draggedOver && this.dragging) {
+      // Reorder on UI
       this.listNode.insertBefore(this.dragging, this.draggedOver);
 
-      // Add controller logic
+      // Reorder on model (for data to persist after page refresh)
     }
-    // Reset
+
+    this.dragReset();
+  }
+
+  dragReset() {
+    // Remove ev. listeners
     this.ghostNode.removeEventListener('mousemove', this.draggingOnMouseMove);
     this.ghostNode.removeEventListener('mouseup', this.draggingOnMouseUp);
+    // Remove drag helpers
     this.listNode.removeChild(this.dropzone);
     document.body.removeChild(this.ghostNode);
-    this.dragging.style.display = 'flex';
+    this.dragging.style.display = 'flex'; // Display original node
 
+    // Reset references
     this.ghostNode = null;
     this.dragging = null;
     this.draggedOver = null;
@@ -297,5 +285,4 @@ class ListView extends View {
     e.stopPropagation();
   }
 }
-
 export default ListView;
