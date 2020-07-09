@@ -174,12 +174,12 @@ class ListView extends View {
     dragBtn.addEventListener(
       'mousedown',
       function (e) {
-        this.draggingOnMouseDown(e, dragBtn);
+        this.dragOnMouseDown(e, dragBtn);
       }.bind(this)
     );
   }
 
-  draggingOnMouseDown(event, dragBtn) {
+  dragOnMouseDown(event, dragBtn) {
     this.dragging = dragBtn.parentElement; // reference for later use
     this.shiftX = event.clientX - this.dragging.getBoundingClientRect().left;
     this.shiftY = event.clientY - this.dragging.getBoundingClientRect().top;
@@ -191,13 +191,10 @@ class ListView extends View {
     // Attach Event listeners
     this.ghostNode.addEventListener(
       'mousemove',
-      this.draggingOnMouseMove.bind(this)
+      this.dragOnMouseMove.bind(this)
     );
 
-    this.ghostNode.addEventListener(
-      'mouseup',
-      this.draggingOnMouseUp.bind(this)
-    );
+    this.ghostNode.addEventListener('mouseup', this.dragOnMouseUp.bind(this));
   }
 
   dragSetup(event, dragBtn) {
@@ -218,9 +215,10 @@ class ListView extends View {
       event.pageX - this.shiftX / 2,
       event.pageY - this.shiftY / 2
     ); // Initial Coordinates (based on initial press)
+    document.body.style.cursor = 'grab'; // set cursor to grab (UI)
   }
 
-  draggingOnMouseMove(e) {
+  dragOnMouseMove(e) {
     // Get elem below dragged node
     const elemBelow = ListView.getElemBelow(this.ghostNode, e);
 
@@ -239,7 +237,7 @@ class ListView extends View {
     }
   }
 
-  draggingOnMouseUp() {
+  dragOnMouseUp() {
     if (this.draggedOver && this.dragging) {
       // Reorder on UI
       this.listNode.insertBefore(this.dragging, this.draggedOver);
@@ -252,12 +250,13 @@ class ListView extends View {
 
   dragReset() {
     // Remove ev. listeners
-    this.ghostNode.removeEventListener('mousemove', this.draggingOnMouseMove);
-    this.ghostNode.removeEventListener('mouseup', this.draggingOnMouseUp);
+    this.ghostNode.removeEventListener('mousemove', this.dragOnMouseMove);
+    this.ghostNode.removeEventListener('mouseup', this.dragOnMouseUp);
     // Remove drag helpers
     this.listNode.removeChild(this.dropzone);
     document.body.removeChild(this.ghostNode);
     this.dragging.style.display = 'flex'; // Display original node
+    document.body.style.cursor = 'default'; // reset cursor
 
     // Reset references
     this.ghostNode = null;
