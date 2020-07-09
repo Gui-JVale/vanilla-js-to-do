@@ -80,16 +80,29 @@ body {
   &__item {
     display: flex;
     margin-left: 0;
-    padding: 1rem;
     background-color: inherit;
     color: black;
+    padding: 1rem;
+    padding-right: 0;
     align-items: center;
+  }
+
+  &__delete-icon {
+    display: none;
+    background-color: #c0392b;
+    transition: all 1s ease;
+  }
+
+  &__item:hover {
+    & .list__delete-icon {
+      flex: initial;
+    }
   }
 
   &__drag-icon {
     opacity: 0.4;
     font-size: 1.5rem;
-    // cursor: grab;
+    cursor: grab;
   }
 
   &__dragging {
@@ -142,13 +155,6 @@ body {
   &__checkbox:checked ~ &__task {
     text-decoration: line-through;
   }
-
-  &__delete-icon {
-    display: none;
-  }
-}
-
-.dragging {
 }
 
 #clear-list {
