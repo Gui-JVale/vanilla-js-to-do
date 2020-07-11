@@ -6,7 +6,6 @@ class ListView extends View {
     this.setupProps(); // Set variables / DOM elements
     this.setupEventListeners(); // Attach event listeners
     Controller.subscribe(this.render, 'modelUpdate', this); // Subscribe to model
-
     // Render
     return this.render(Controller.getList());
   }
@@ -233,16 +232,25 @@ class ListView extends View {
     if (elemBelow && elemBelow.tagName === 'LI') {
       // Create reference of draggedOver element for mouseup event
       this.draggedOver = elemBelow;
-      elemBelow.parentElement.insertBefore(this.dropzone, this.draggedOver);
+      // UI/UX dropzone
+      if (elemBelow === this.listNode.lastChild) {
+        this.listNode.appendChild(this.dropzone);
+      } else {
+        this.listNode.insertBefore(this.dropzone, this.draggedOver);
+      }
     }
   }
 
   dragOnMouseUp() {
     if (this.draggedOver && this.dragging) {
       // Reorder on UI
-      this.listNode.insertBefore(this.dragging, this.draggedOver);
+      if (this.draggedOver === this.listNode.lastChild) {
+        this.listNode.appendChild(this.dragging);
+      } else {
+        this.listNode.insertBefore(this.dragging, this.draggedOver);
+      }
 
-      // Reorder on model (for data to persist after page refresh)
+      // Reorder on model (for data persistance after page refresh)
     }
 
     this.dragReset();
