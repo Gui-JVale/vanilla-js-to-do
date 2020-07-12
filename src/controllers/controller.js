@@ -1,4 +1,7 @@
-import model from '../models/model';
+import Model from '../models/model';
+
+const state = new Model();
+let { list: model } = state;
 
 /*
  *
@@ -44,6 +47,10 @@ class Controller {
     return model.filter((m) => m);
   }
 
+  static setList(list) {
+    model = list;
+  }
+
   static getTask(i) {
     return model[i];
   }
@@ -57,12 +64,6 @@ class Controller {
 
   static remove(arg) {
     return model.splice(typeof arg === 'string' ? model.indexOf(arg) : arg);
-  }
-
-  static swap([index1, index2]) {
-    const temp = model[index1];
-    model[index1] = model[index2];
-    model[index2] = temp;
   }
 
   static toggleComplete(index) {
@@ -135,14 +136,14 @@ class Controller {
             model,
             'modelUpdate'
           );
-        case 'swap':
-          if (args.length !== 2) {
-            throw Error('swap must be called with 2 arguments');
+        case 'reorder':
+          if (!Array.isArray(args[0])) {
+            throw Error('reorder must be called with an array of objects');
           }
           return Controller.autoSaveAndPublish(
-            Controller.swap,
-            args,
-            model,
+            Controller.setList,
+            args[0],
+            args[0],
             'modelUpdate'
           );
         case 'empty':

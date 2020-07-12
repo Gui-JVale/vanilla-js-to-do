@@ -1,3 +1,11 @@
-const model = JSON.parse(localStorage.getItem('model')) || {};
+class Model {
+  constructor() {
+    this.list = JSON.parse(localStorage.getItem('model')) || {};
+  }
 
-export default model;
+  setList(list) {
+    this.list = list;
+  }
+}
+
+export default Model;

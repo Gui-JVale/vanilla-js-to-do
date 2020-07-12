@@ -251,6 +251,13 @@ class ListView extends View {
       }
 
       // Reorder on model (for data persistance after page refresh)
+      // Timeout to avoid 'colisions' on dropping element
+      window.setTimeout(
+        Controller.updateList,
+        200,
+        'reorder',
+        this.buildModelFromList()
+      );
     }
 
     this.dragReset();
@@ -270,6 +277,28 @@ class ListView extends View {
     this.ghostNode = null;
     this.dragging = null;
     this.draggedOver = null;
+  }
+
+  buildModelFromList() {
+    const model = [];
+    const items = Array.from(this.listNode.childNodes);
+    const max = items.length - 1;
+    let j;
+    let item;
+    let checkbox;
+
+    for (j = max; j >= 0; j -= 1) {
+      item = items[j];
+      if (item && item.textContent) {
+        checkbox = item.querySelector('input');
+        model.push({
+          task: item.textContent,
+          completed: checkbox ? checkbox.checked : false,
+        });
+      }
+    }
+
+    return model;
   }
 
   static getElemBelow(topNode, event) {
