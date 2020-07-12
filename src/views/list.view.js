@@ -86,8 +86,8 @@ class ListView extends View {
     const childs = [];
 
     childs.push(ListView.buildDragIcon());
-    childs.push(ListView.buildTextWrapper(item.task));
     childs.push(ListView.buildCheckbox(item.completed, i));
+    childs.push(ListView.buildTextWrapper(item.task));
     childs.push(ListView.buildLabel(i));
     childs.push(ListView.buildDeleteIcon(i));
 
